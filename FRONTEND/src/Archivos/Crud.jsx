@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import "../css/crud.css";
+import "../css/crud.css"
 import { Link } from "react-router-dom";
 import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";

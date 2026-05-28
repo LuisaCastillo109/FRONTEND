@@ -2,8 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios"; // Lo necesitamos para avisarle al backend
-import "../css/comprobante.css";
-
+import "../css/comprobante.css"
 const Comprobante = () => {
   const { state } = useLocation();
   const { factura } = state || {};
