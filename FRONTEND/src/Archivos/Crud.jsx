@@ -37,7 +37,6 @@ const GestionClientesAdmin = () => {
 
   const obtenerClientes = async () => {
     try {
-      // Cambiado de /ObtenerUsuarios a /ObtenerClientes
       const response = await api.get(`/ObtenerClientes/${usuario.id}`);
       setClientes(response.data);
     } catch (err) {

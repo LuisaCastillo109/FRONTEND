@@ -23,8 +23,11 @@ const Comprobante = () => {
 
       alert("Factura enviada al correo del cliente con éxito!");
       console.log(res.data)
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      if (err.res.data){
+      alert (err.res.data)
+      }
+      console.error(err);
       alert("El archivo aún no está en la carpeta o el nombre no coincide (Debe ser factura_ID.pdf)");
     }};
 

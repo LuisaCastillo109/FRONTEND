@@ -1,39 +1,49 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/detalle.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { useNavigate } from "react-router-dom";
 
 const FacturasUsuarios = () => {
+
   const [usuario, setUsuario] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
-  const [clientes, setClientes] = useState([]);
-  const [facturas, setFacturas] = useState([]);
+  const [, setClientes] = useState([]);
+  const [, setFacturas] = useState([]);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
-  const [detalle, setDetalle] = useState([]);
+  const [detalle] = useState([]);
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [archivo, setArchivo] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [tipoDocumento, setTipoDocumento] = useState("Todos");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
 
-  const cargarDatos = (usuarioId) => {
-      axios.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`).then(res => setClientes(res.data));
-      axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`).then(res => setFacturas(res.data)); // <--- CARGAR HISTORIAL
-    };
+  const navigate = useNavigate();
 
+  const cargarDatos = (usuarioId) => {
+    axios.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`)
+      .then(res => setClientes(res.data));
+
+    axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
+      .then(res => setFacturas(res.data));
+  };
+
+  // eslint-disable-next-line
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("usuario"));
-    if (user) setUsuario(user);
+
+    if (user) {
+      setUsuario(user);
+      cargarDatos(user.id);
+    }
+
     obtenerDatos();
   }, []);
 
   const obtenerDatos = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("usuario"));
       const res = await axios.get("http://localhost:3014/ObtenerClientesConFacturas");
       const agrupados = agruparUsuarios(res.data);
       setUsuarios(agrupados);
@@ -42,183 +52,179 @@ const FacturasUsuarios = () => {
     }
   };
 
-  const navigate = useNavigate();
-
-  const Factura =()=>{
-  navigate ("/factura")
-  }
+  const Factura = () => {
+    navigate("/factura");
+  };
 
   const SubirFoto = async () => {
-      if (!archivo) {
-        alert("Seleccione una imagen");
-        return;
-      }
-      try {
-        const formData = new FormData();
-        formData.append("foto", archivo);
-        const response = await axios.put(
-          `http://localhost:3014/SubirFoto/${usuario.id}`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-        const nombreFotoNueva = response.data.foto;
-        const userActualizado = { ...usuario, foto: nombreFotoNueva };
-        localStorage.setItem("usuario", JSON.stringify(userActualizado));
-  
-        setUsuario(userActualizado);
-  
-        alert("Foto actualizada con éxito");
-        setMostrarMenu(false);
-      } catch (error) {
-        console.error(error);
-        alert("Error al subir la foto");
-      }};
-  
-    const CerrarSesion = () => {
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("Token");
-      setUsuario(null);
-      window.location.href = "/"; 
-    };
-  
+    if (!archivo) {
+      alert("Seleccione una imagen");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("foto", archivo);
+
+      const response = await axios.put(
+        `http://localhost:3014/SubirFoto/${usuario.id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      const nombreFotoNueva = response.data.foto;
+
+      const userActualizado = {
+        ...usuario,
+        foto: nombreFotoNueva,
+      };
+
+      localStorage.setItem("usuario", JSON.stringify(userActualizado));
+
+      setUsuario(userActualizado);
+
+      alert("Foto actualizada con éxito");
+      setMostrarMenu(false);
+
+    } catch (error) {
+      console.error(error);
+      alert("Error al subir la foto");
+    }
+  };
+
+  const CerrarSesion = () => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("Token");
+    setUsuario(null);
+    window.location.href = "/";
+  };
 
   const agruparUsuarios = (data) => {
 
-  const usuariosMap = {};
+    const usuariosMap = {};
 
-  data.forEach((item) => {
+    data.forEach((item) => {
 
-    if (!usuariosMap[item.id_cliente]) {
+      if (!usuariosMap[item.id_cliente]) {
+        usuariosMap[item.id_cliente] = {
+          ...item,
+          facturas: [],
+        };
+      }
 
-      usuariosMap[item.id_cliente] = {
-        ...item,
-        facturas: [],
-      };
-
-    }
-
-    const existeFactura =
-      usuariosMap[item.id_cliente].facturas.some(
+      const existeFactura = usuariosMap[item.id_cliente].facturas.some(
         factura => factura.id === item.factura_id
       );
 
-    if (!existeFactura) {
+      if (!existeFactura) {
+        usuariosMap[item.id_cliente].facturas.push({
+          id: item.factura_id,
+          total: item.total,
+          estado: item.estado,
+          fecha: item.fecha,
+          metodo_pago: item.metodo_pago,
+          pdf: item.pdf,
+        });
+      }
+    });
 
-      usuariosMap[item.id_cliente].facturas.push({
-        id: item.factura_id,
-        total: item.total,
-        estado: item.estado,
-        fecha: item.fecha,
-        metodo_pago: item.metodo_pago,
-        pdf: item.pdf
-      });
-
-    }
-
-  });
-
-  return Object.values(usuariosMap);
-};
+    return Object.values(usuariosMap);
+  };
 
   const subirPDF = async (e, id) => {
-  const file = e.target.files[0];
 
-  if (!file) return;
+    const file = e.target.files[0];
 
-  const formData = new FormData();
-  formData.append("pdf", file);
+    if (!file) return;
 
-  try {
-    await axios.put(
-      `http://localhost:3014/SubirPDF/${id}`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
+    const formData = new FormData();
 
-    alert("PDF subido correctamente");
-    obtenerDatos();
+    formData.append("pdf", file);
 
-  } catch (error) {
-    console.log(error);
-    alert("Error al subir PDF");
-  }
-};
+    try {
 
+      await axios.put(
+        `http://localhost:3014/SubirPDF/${id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-const exportarExcel = () => {
+      alert("PDF subido correctamente");
 
-  const datos = [];
+      obtenerDatos();
 
-  usuarios.forEach(user => {
+    } catch (error) {
+      console.log(error);
+      alert("Error al subir PDF");
+    }
+  };
 
-    user.facturas.forEach(factura => {
+  const exportarExcel = () => {
 
-      datos.push({
-        "ID Factura": factura.id,
-        "Cliente": `${user.nombre} ${user.apellido}`,
-        "Total": factura.total,
-        "Estado": factura.estado,
-        "Método Pago": factura.metodo_pago,
-        "Fecha": new Date(factura.fecha).toLocaleDateString()
+    const datos = [];
+
+    usuarios.forEach(user => {
+
+      user.facturas.forEach(factura => {
+
+        datos.push({
+          "ID Factura": factura.id,
+          "Cliente": `${user.nombre} ${user.apellido}`,
+          "Total": factura.total,
+          "Estado": factura.estado,
+          "Método Pago": factura.metodo_pago,
+          "Fecha": new Date(factura.fecha).toLocaleDateString(),
+        });
+
       });
 
     });
 
-  });
+    const worksheet = XLSX.utils.json_to_sheet(datos);
 
-  const worksheet = XLSX.utils.json_to_sheet(datos);
+    const workbook = XLSX.utils.book_new();
 
-  const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Facturas");
 
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    "Facturas"
-  );
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array"
-  });
-
-  const data = new Blob(
-    [excelBuffer],
-    {
-      type:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
-    }
-  );
-
-  saveAs(data, "facturas.xlsx");
-};
-
-
-const usuariosFiltrados = usuarios.filter(user => {
-
-  // Buscar por documento o nombre
-  const coincideBusqueda =
-    user.documento?.toString().includes(busqueda) ||
-    `${user.nombre} ${user.apellido}`
-      .toLowerCase()
-      .includes(busqueda.toLowerCase());
-
-  // Tipo documento
-  const coincideTipo =
-    tipoDocumento === "Todos" ||
-    user.tipo_documento === tipoDocumento;
-
-  // Estado factura
-  const coincideEstado =
-    estadoFiltro === "Todos" ||
-    user.facturas.some(
-      factura => factura.estado === estadoFiltro
+    const data = new Blob(
+      [excelBuffer],
+      {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+      }
     );
 
-  return coincideBusqueda && coincideTipo && coincideEstado;
-});
+    saveAs(data, "facturas.xlsx");
+  };
+
+  const usuariosFiltrados = usuarios.filter(user => {
+
+    const coincideBusqueda =
+      user.documento?.toString().includes(busqueda) ||
+      `${user.nombre} ${user.apellido}`
+        .toLowerCase()
+        .includes(busqueda.toLowerCase());
+
+    const coincideTipo =
+      tipoDocumento === "Todos" ||
+      user.tipo_documento === tipoDocumento;
+
+    const coincideEstado =
+      estadoFiltro === "Todos" ||
+      user.facturas.some(
+        factura => factura.estado === estadoFiltro
+      );
+
+    return coincideBusqueda && coincideTipo && coincideEstado;
+  });
 
   return (
     <div className="dashboard-container">
