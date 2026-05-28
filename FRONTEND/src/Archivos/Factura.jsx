@@ -19,17 +19,13 @@ const Factura = () => {
   const [usuario, setUsuario] = useState(null);
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [archivo, setArchivo] = useState(null);
-  const [numeroTarjeta, setNumeroTarjeta] = useState("");
-  const [nombreTarjeta, setNombreTarjeta] = useState("");
-  const [fechaTarjeta, setFechaTarjeta] = useState("");
-  const [cvv, setCvv] = useState("");
   const [clienteEditado, setClienteEditado] = useState({
   documento: "",
   telefono: "",
   direccion: "",
   email: ""
 });
-const [facturaAbierta, setFacturaAbierta] = useState(null);
+const [facturaAbierta] = useState(null);
 
 useEffect(() => {
 const user = JSON.parse(localStorage.getItem("usuario"));
@@ -174,6 +170,7 @@ const enviarFactura = async (id) => {
     );
 
     alert(response.data.mensaje);
+    enviarFactura(response.data)
 
   } catch (error) {
     console.log(error);

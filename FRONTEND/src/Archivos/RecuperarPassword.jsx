@@ -1,4 +1,3 @@
-import {useNavigate} from "react-router-dom";
 import React,{useState} from "react";
 import axios from "axios";
 import "../css/ejemplo.css";
@@ -7,7 +6,6 @@ import { FaFacebook, FaEnvelope } from "react-icons/fa";
 const RecuperarContraseña =()=>{
 const [correo,setCorreo]=useState("");
 
-const navigate = useNavigate();
 
 const RecuperarPassword =async(e)=>{
 e.preventDefault();

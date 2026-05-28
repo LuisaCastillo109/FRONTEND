@@ -27,7 +27,7 @@ const DashboardGraficas = () => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [ventasMensuales, setVentasMensuales] = useState([]);
   const [ventasProductos, setVentasProductos] = useState([]);
-  const [datosResumen, setDatosResumen] = useState("");
+  const [,setDatosResumen] = useState("");
  const [datos, setDatos] = useState({
     facturas: 0,
     ventas: 0
