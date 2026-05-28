@@ -75,17 +75,21 @@ const GestionClientesAdmin = () => {
     window.location.href = "/";
   };
 
-  // --- EFECTOS ---
+ // eslint-disable-next-line
+useEffect(() => {
+  obtenerClientes();
 
-  useEffect(() => {
-    obtenerClientes();
-    const user = localStorage.getItem("usuario");
-    if (user) setUsuarioAdmin(JSON.parse(user));
-    document.body.classList.add("body-twice");
-    return () => document.body.classList.remove("body-twice");
-  }, []);
+  const user = localStorage.getItem("usuario");
 
-  // --- FILTRO ---
+  if (user) {
+    setUsuarioAdmin(JSON.parse(user));
+  }
+
+  document.body.classList.add("body-twice");
+
+  return () => document.body.classList.remove("body-twice");
+
+}, []);
 
   const clientesFiltrados = clientes.filter((c) =>
     c.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||

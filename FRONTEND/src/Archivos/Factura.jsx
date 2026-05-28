@@ -162,21 +162,6 @@ axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
   }
 };
 
-const enviarFactura = async (id) => {
-  try {
-
-    const response = await axios.post(
-      `http://localhost:3014/enviar-factura/${id}`
-    );
-
-    alert(response.data.mensaje);
-    enviarFactura(response.data)
-
-  } catch (error) {
-    console.log(error);
-    alert("Error al enviar factura");
-  }
-};
   const CerrarSesion =()=>{
   localStorage.removeItem("usuario");
   localStorage.removeItem("Token")

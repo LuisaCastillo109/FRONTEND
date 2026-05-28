@@ -31,16 +31,18 @@ const FacturasUsuarios = () => {
   };
 
   // eslint-disable-next-line
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("usuario"));
+useEffect(() => {
 
-    if (user) {
-      setUsuario(user);
-      cargarDatos(user.id);
-    }
+  const user = JSON.parse(localStorage.getItem("usuario"));
 
-    obtenerDatos();
-  }, []);
+  if (user) {
+    setUsuario(user);
+    cargarDatos(user.id);
+  }
+
+  obtenerDatos();
+
+}, []);
 
   const obtenerDatos = async () => {
     try {
