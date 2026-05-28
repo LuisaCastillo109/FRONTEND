@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  useCallback } from "react";
 import axios from "axios";
 import "../css/detalle.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,8 +30,8 @@ const FacturasUsuarios = () => {
       .then(res => setFacturas(res.data));
   };
 
-  // eslint-disable-next-line
-useEffect(() => {
+
+  useEffect(() => {
 
   const user = JSON.parse(localStorage.getItem("usuario"));
 
@@ -42,17 +42,25 @@ useEffect(() => {
 
   obtenerDatos();
 
-}, []);
+}, [obtenerDatos]);
 
-  const obtenerDatos = async () => {
-    try {
-      const res = await axios.get("http://localhost:3014/ObtenerClientesConFacturas");
-      const agrupados = agruparUsuarios(res.data);
-      setUsuarios(agrupados);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const obtenerDatos = useCallback(async () => {
+  try {
+
+    const res = await axios.get(
+      "http://localhost:3014/ObtenerClientesConFacturas"
+    );
+
+    const agrupados = agruparUsuarios(res.data);
+
+    setUsuarios(agrupados);
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+}, []);
 
   const Factura = () => {
     navigate("/factura");

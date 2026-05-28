@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import "../css/crud.css"
 import { Link } from "react-router-dom";
 import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
+
 
 const GestionClientesAdmin = () => {
   const [clientes, setClientes] = useState([]);
@@ -33,16 +34,15 @@ const GestionClientesAdmin = () => {
     }
   });
 
-  // --- LÓGICA DE API ---
+  const obtenerClientes = useCallback(async () => {
+  try {
+    const response = await api.get(`/ObtenerClientes/${usuario.id}`);
+    setClientes(response.data);
+  } catch (err) {
+    console.error("Error al obtener los clientes", err);
+  }
+}, [api, usuario.id]);
 
-  const obtenerClientes = async () => {
-    try {
-      const response = await api.get(`/ObtenerClientes/${usuario.id}`);
-      setClientes(response.data);
-    } catch (err) {
-      console.error("Error al obtener los clientes", err);
-    }
-  };
 
   const crearCliente = async (e) => {
     e.preventDefault();
@@ -75,8 +75,9 @@ const GestionClientesAdmin = () => {
     window.location.href = "/";
   };
 
- // eslint-disable-next-line
-useEffect(() => {
+
+  useEffect(() => {
+
   obtenerClientes();
 
   const user = localStorage.getItem("usuario");
@@ -89,7 +90,7 @@ useEffect(() => {
 
   return () => document.body.classList.remove("body-twice");
 
-}, []);
+}, [obtenerClientes]);
 
   const clientesFiltrados = clientes.filter((c) =>
     c.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
