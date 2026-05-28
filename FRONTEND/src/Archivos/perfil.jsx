@@ -67,7 +67,7 @@ const Perfil = () => {
 
       localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
       setUsuario(usuarioActualizado);
-
+      console.log(res.data)
       alert("Datos actualizados correctamente");
     } catch (error) {
       console.log(error);

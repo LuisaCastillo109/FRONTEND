@@ -15,13 +15,6 @@ axios.get("http://localhost:3014/ObtenerUsuarios")
 .finally(()=>setLoading(false))
 }, []);
 
-
-const EliminarUsuario =(id)=>{
-axios.delete(`http://localhost:3014/eliminar/${id}`)
-.then(res=>setUsuario(res.data))
-.catch(err=>console.log("Error al eliminar el usuario"))
-}
-
 if (loading) return <p>cargando....</p>
 if (usuario.length ===0) return  <p>No hay usuarios que mostrar</p>
 

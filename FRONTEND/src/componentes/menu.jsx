@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { LayoutDashboard, Users, Box, FilePlus } from "lucide-react";
 import "../css/menu.css"; // Asegúrate de que esta ruta sea correcta
 
 const Menu = ({ children }) => {

@@ -24,6 +24,7 @@ const response = await axios.post("http://localhost:3014/crear",
 )
 alert("Usuario registrado con exito")
 navigate("/InicioSesion")
+console.log(response.data)
 }catch(err){
 if (err.response){
 alert (err.response.data)
