@@ -17,21 +17,56 @@ const LoginUsuario =()=>{
 navigate("/InicioSesion")
 }
 
-const CrearUsuario =async(e)=>{
-e.preventDefault();
-try{
-const response = await api.post("/crear",
-{nombre,apellido,correo,contrasena}
-)
-alert("Usuario registrado con exito")
-navigate("/InicioSesion")
-console.log(response.data)
-}catch(err){
-if (err.response){
-alert (err.response.data)
-}else{
-alert("Error en el servidor")
-}}};
+const CrearUsuario = async (e) => {
+  e.preventDefault();
+
+  console.log("🚀 INICIANDO CREACIÓN DE USUARIO");
+
+  // 🔍 VER QUÉ ESTÁS ENVIANDO
+  console.log("📤 DATOS QUE ENVÍO AL BACKEND:");
+  console.log({
+    nombre,
+    apellido,
+    correo,
+    contrasena
+  });
+
+  try {
+    console.log("📡 ENVIANDO PETICIÓN A /crear...");
+
+    const response = await api.post("/crear", {
+      nombre,
+      apellido,
+      correo,
+      contrasena
+    });
+
+    console.log("✅ RESPUESTA DEL BACKEND:");
+    console.log(response.data);
+
+    alert("Usuario registrado con exito");
+    navigate("/InicioSesion");
+
+  } catch (err) {
+
+    console.log("❌ ERROR CAPTURADO:");
+
+    // 🔥 ERROR COMPLETO
+    console.log(err);
+
+    // 🔥 RESPUESTA DEL BACKEND (si existe)
+    if (err.response) {
+      console.log("📩 RESPUESTA BACKEND ERROR:");
+      console.log("Status:", err.response.status);
+      console.log("Data:", err.response.data);
+
+      alert(err.response.data);
+    } else {
+      console.log("🌐 ERROR DE RED O SERVIDOR CAÍDO");
+      alert("Error en el servidor");
+    }
+  }
+};
 
 
 return (
