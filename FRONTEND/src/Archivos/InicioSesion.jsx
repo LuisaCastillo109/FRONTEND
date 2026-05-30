@@ -3,7 +3,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import "../css/ejemplo.css";
 import { FaFacebook, FaEnvelope } from "react-icons/fa";
-import "../api"
+import "../api/api"
 
 const InicioSesion =()=>{
 
