@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import api from "../api/api"
 
 const FacturasUsuarios = () => {
 
@@ -23,10 +24,10 @@ const FacturasUsuarios = () => {
   const navigate = useNavigate();
 
   const cargarDatos = (usuarioId) => {
-    axios.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`)
+    api.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`)
       .then(res => setClientes(res.data));
 
-    axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
+    api.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
       .then(res => setFacturas(res.data));
   };
 
@@ -47,8 +48,8 @@ const FacturasUsuarios = () => {
 const obtenerDatos = useCallback(async () => {
   try {
 
-    const res = await axios.get(
-      "http://localhost:3014/ObtenerClientesConFacturas"
+    const res = await api.get(
+      "/ObtenerClientesConFacturas"
     );
 
     const agrupados = agruparUsuarios(res.data);
@@ -76,8 +77,8 @@ const obtenerDatos = useCallback(async () => {
       const formData = new FormData();
       formData.append("foto", archivo);
 
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `/SubirFoto/${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

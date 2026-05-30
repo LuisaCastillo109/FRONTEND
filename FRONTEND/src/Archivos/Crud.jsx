@@ -4,6 +4,7 @@ import "../css/crud.css"
 import { Link } from "react-router-dom";
 import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
+import api from "../api/api"
 
 
 const GestionClientesAdmin = () => {
