@@ -9,7 +9,7 @@ const Registro =()=>{
 const [nombre,setNombre]=useState("");
 const [apellido,setApellido]=useState("");
 const [correo,setCorreo]=useState("");
-const [contraseña,setContraseña]=useState("");
+const [contrasena,setContraseña]=useState("");
 
 const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const CrearUsuario =async(e)=>{
 e.preventDefault();
 try{
 const response = await api.post("/crear",
-{nombre,apellido,correo,contraseña}
+{nombre,apellido,correo,contrasena}
 )
 alert("Usuario registrado con exito")
 navigate("/InicioSesion")
@@ -76,7 +76,7 @@ return (
       <input
         type="password"
         placeholder="Contraseña"
-        value ={contraseña}
+        value ={contrasena}
         onChange={(e)=>setContraseña(e.target.value)}
         required
       />

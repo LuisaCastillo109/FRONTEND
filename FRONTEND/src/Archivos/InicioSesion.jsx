@@ -8,7 +8,7 @@ import "../api/api"
 const InicioSesion =()=>{
 
 const [correo,setCorreo]=useState("");
-const [contraseña,setContraseña]=useState("");
+const [contrasena,setContraseña]=useState("");
 
 const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const LoginUsuario =async(e)=>{
 e.preventDefault();
 try{
 const response = await axios.post("/login",
-{correo,contraseña}
+{correo,contrasena}
 );
 
 alert ("Ingreso Exitoso");
@@ -67,7 +67,7 @@ return (
       <input 
         type="password"
         placeholder="Contraseña"
-        value={contraseña}
+        value={contrasena}
         onChange={(e)=>setContraseña(e.target.value)}
         required
       />
