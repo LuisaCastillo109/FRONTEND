@@ -20,7 +20,7 @@ navigate("/InicioSesion")
 const CrearUsuario =async(e)=>{
 e.preventDefault();
 try{
-const response = await axios.post("/crear",
+const response = await api.post("/crear",
 {nombre,apellido,correo,contraseña}
 )
 alert("Usuario registrado con exito")
