@@ -3,6 +3,8 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import "../css/ejemplo.css";
 import { FaFacebook, FaEnvelope } from "react-icons/fa";
+import "../api"
+
 const InicioSesion =()=>{
 
 const [correo,setCorreo]=useState("");
@@ -17,7 +19,7 @@ navigate ("/RecuperarPassword")
 const LoginUsuario =async(e)=>{
 e.preventDefault();
 try{
-const response = await axios.post("http://localhost:3014/login",
+const response = await axios.post("/login",
 {correo,contraseña}
 );
 

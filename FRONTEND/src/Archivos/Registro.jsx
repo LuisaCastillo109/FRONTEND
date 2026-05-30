@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import "../css/ejemplo.css";
 import { FaFacebook, FaEnvelope } from "react-icons/fa";
+import "../api"
 
 const Registro =()=>{
 const [nombre,setNombre]=useState("");
@@ -19,7 +20,7 @@ navigate("/InicioSesion")
 const CrearUsuario =async(e)=>{
 e.preventDefault();
 try{
-const response = await axios.post("http://localhost:3014/crear",
+const response = await axios.post("/crear",
 {nombre,apellido,correo,contraseña}
 )
 alert("Usuario registrado con exito")
