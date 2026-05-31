@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/productos.css";
 import { Link } from "react-router-dom";
+import api from "../api/api"
 
 const Productos = () => {
-  const API = "http://localhost:3014";
+
 
   // ESTADOS INDIVIDUALES (Para mayor control)
   const [mostrarMenu, setMostrarMenu] = useState(false);
@@ -28,7 +29,7 @@ const Productos = () => {
 
   const obtenerProductos = async () => {
     const user = JSON.parse(localStorage.getItem("usuario"));
-    const res = await axios.get(`${API}/ObtenerProductos/${user.id}`);
+    const res = await api.get(`/ObtenerProductos/${user.id}`);
     setProductos(res.data);
   };
 
@@ -64,7 +65,7 @@ const Productos = () => {
       formData.append("stock", stock);
       formData.append("imagen", imagen);
       formData.append("usuario_id", user.id);
-      await axios.post(`${API}/CrearProducto`, formData);
+      await api.post(`/CrearProducto`, formData);
       alert("Producto creado con éxito");
       obtenerProductos();
       limpiarForm();
@@ -80,7 +81,7 @@ const Productos = () => {
     setDescripcion(p.descripcion);
     setStock(p.stock);
     setEstado(p.estado);
-    setPreview(p.imagen ? `${API}/uploads/${p.imagen}` : null);
+    setPreview(p.imagen ? `/uploads/${p.imagen}` : null);
   };
 
   const ActualizarProductos = async () => {
@@ -96,7 +97,7 @@ const Productos = () => {
         formData.append("imagen", imagen);
       }
 
-      await axios.put(`${API}/ActualizarProducto/${editando}`, formData);
+      await api.put(`/ActualizarProducto/${editando}`, formData);
       
       alert("Producto actualizado con éxito");
       obtenerProductos();
@@ -109,7 +110,7 @@ const Productos = () => {
 
   const eliminarProducto = async (id) => {
     if(window.confirm("¿Estás seguro de eliminar este producto?")) {
-        await axios.delete(`${API}/EliminarProducto/${id}`);
+        await api.delete(`/EliminarProducto/${id}`);
         obtenerProductos();
     }
   };
