@@ -28,7 +28,7 @@ const GestionClientesAdmin = () => {
   const API = "http://localhost:3014";
   const Token = localStorage.getItem("Token");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const api = axios.create({
+  const api1 = axios.create({
     baseURL: API,
     headers: {
       Authorization: `Bearer ${Token}`
@@ -37,7 +37,7 @@ const GestionClientesAdmin = () => {
 
   const obtenerClientes = useCallback(async () => {
   try {
-    const response = await api.get(`/ObtenerClientes/${usuario.id}`);
+    const response = await api1.get(`/ObtenerClientes/${usuario.id}`);
     setClientes(response.data);
   } catch (err) {
     console.error("Error al obtener los clientes", err);
