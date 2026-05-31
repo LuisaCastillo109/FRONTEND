@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import api from "../api/api"
 
-const FacturasUsuarios = () => {
+const DetalleFactura = () => {
 
   const [usuario, setUsuario] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
@@ -24,10 +24,10 @@ const FacturasUsuarios = () => {
   const navigate = useNavigate();
 
   const cargarDatos = (usuarioId) => {
-    api.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`)
+    api.get(`/ObtenerClientes/${usuarioId}`)
       .then(res => setClientes(res.data));
 
-    api.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
+    api.get(`/ObtenerFacturas/${usuarioId}`)
       .then(res => setFacturas(res.data));
   };
 
@@ -156,8 +156,8 @@ const obtenerDatos = useCallback(async () => {
 
     try {
 
-      await axios.put(
-        `http://localhost:3014/SubirPDF/${id}`,
+      await api.put(
+        `/SubirPDF/${id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -266,7 +266,7 @@ const obtenerDatos = useCallback(async () => {
                    // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
                    src={
                      usuario.foto
-                       ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                       ? `${process.env.REACT_APP_API_URL}/uploads/${usuario.foto}?t=${new Date().getTime()}`
                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                    }
                    alt="perfil"
@@ -429,7 +429,7 @@ const obtenerDatos = useCallback(async () => {
       {/* VER PDF AL LADO */}
       {factura.pdf && (
         <a
-          href={`http://localhost:3014/pdf/${factura.pdf}`}
+          href={`/pdf/${factura.pdf}`}
           target="_blank"
           rel="noreferrer"
           style={{
@@ -519,4 +519,4 @@ const obtenerDatos = useCallback(async () => {
   );
 };
 
-export default FacturasUsuarios;
+export default DetalleFactura;
