@@ -3,7 +3,7 @@ import axios from "axios";
 import "../css/factura.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import api from "../api/api"
  
 
 const Factura = () => {
@@ -36,19 +36,19 @@ cargarDatos(user.id);
 
 const cargarDatos = (usuarioId) => {
 console.log(usuarioId)
-axios.get(`http://localhost:3014/ObtenerClientes/${usuarioId}`)
+api.get(`/ObtenerClientes/${usuarioId}`)
 .then(res => setClientes(res.data));
 
-axios.get(`http://localhost:3014/ObtenerProductos/${usuarioId}`)
+api.get(`/ObtenerProductos/${usuarioId}`)
 .then(res => setProductos(res.data));
 
-axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
+api.get(`/ObtenerFacturas/${usuarioId}`)
 .then(res => setFacturas(res.data));
 
 };
   const pagarFactura = async (id) => {
     try {
-      await axios.put(`http://localhost:3014/PagarFactura/${id}`);
+      await api.put(`/PagarFactura/${id}`);
       alert("Factura marcada como PAGADA");
       cargarDatos(usuario.id);
     } catch (error) {
@@ -79,8 +79,8 @@ axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
     try {
       const formData = new FormData();
       formData.append("foto", archivo);
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `/SubirFoto/${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -125,7 +125,7 @@ axios.get(`http://localhost:3014/ObtenerFacturas/${usuarioId}`)
       items,
     });
 
-    const res = await axios.post("http://localhost:3014/crearFactura", {
+    const res = await api.post("/crearFactura", {
       usuario_id: usuario.id,
       id_cliente: clienteId,
       metodo_pago: metodoPago,
