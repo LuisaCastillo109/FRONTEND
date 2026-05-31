@@ -285,7 +285,7 @@ const Productos = () => {
             <tr key={p.id}>
               <td>{index + 1}</td>
               <td>
-                <img className="img-producto" src={p.imagen ? `${API}/uploads/${p.imagen}` : "https://via.placeholder.com/50"} alt="" />
+                <img className="img-producto" src={p.imagen ? `/uploads/${p.imagen}` : "https://via.placeholder.com/50"} alt="" />
               </td>
               <td><strong>{p.nombre}</strong></td>
               <td>${p.precio}</td>
