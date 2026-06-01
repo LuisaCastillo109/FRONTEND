@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../css/dashboard.css";
 // Importamos los iconos
 import { FileText, DollarSign } from "lucide-react";
+import api from "../api/api"
 
 const Dashboard = () => {
   const [usuario, setUsuario] = useState(null);
@@ -25,8 +26,8 @@ if (user) {
 
 setUsuario(user);
 
-axios
-.get(`http://localhost:3014/ObtenerDashboard/${user.id}`)
+api
+.get(`/ObtenerDashboard/${user.id}`)
 .then(res => setDatos(res.data))
 .catch(err => console.log(err));
 
@@ -42,8 +43,8 @@ axios
     try {
       const formData = new FormData();
       formData.append("foto", archivo);
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `/SubirFoto/${usuario.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -92,7 +93,7 @@ axios
             <span style={{ fontWeight: 'bold' }}>{usuario.nombre}</span>
             <img
               className="foto-perfil"
-              src={usuario.foto ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              src={usuario.foto ? `/uploads/${usuario.foto}?t=${new Date().getTime()}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
               alt="perfil"
               style={{ width: '45px', height: '45px', borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }}
               onClick={() => setMostrarMenu(!mostrarMenu)}
