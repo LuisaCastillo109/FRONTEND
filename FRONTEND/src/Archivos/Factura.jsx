@@ -516,7 +516,7 @@ const disminuirCantidad = (index) => {
         <td>▶ {f.id}</td>
         <td><strong>{f.nombre} {f.apellido}</strong></td>
         <td>{new Date(f.fecha).toLocaleDateString()}</td>
-        <td>${f.total.toFixed(2)}</td>
+        <td>${Number(f.total).toFixed(2)}</td>
         <td>
           <span className={`badge ${f.estado.toLowerCase()}`}>
             {f.estado}
