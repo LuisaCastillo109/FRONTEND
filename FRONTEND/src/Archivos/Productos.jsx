@@ -6,8 +6,6 @@ import api from "../api/api"
 
 const Productos = () => {
 
-
-  // ESTADOS INDIVIDUALES (Para mayor control)
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [archivo, setArchivo] = useState(null);
   const [productos, setProductos] = useState([]);
