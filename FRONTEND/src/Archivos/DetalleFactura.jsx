@@ -1,241 +1,225 @@
-import React, { useEffect, useState,  useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/detalle.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api"
 
-const DetalleFactura = () => {
-
+const FacturasUsuarios = () => {
   const [usuario, setUsuario] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
-  const [, setClientes] = useState([]);
-  const [, setFacturas] = useState([]);
+  const [clientes, setClientes] = useState([]);
+  const [facturas, setFacturas] = useState([]);
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
-  const [detalle] = useState([]);
+  const [detalle, setDetalle] = useState([]);
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [archivo, setArchivo] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [tipoDocumento, setTipoDocumento] = useState("Todos");
   const [estadoFiltro, setEstadoFiltro] = useState("Todos");
 
-  const navigate = useNavigate();
-
   const cargarDatos = (usuarioId) => {
-    api.get(`/ObtenerClientes/${usuarioId}`)
-      .then(res => setClientes(res.data));
-
-    api.get(`/ObtenerFacturas/${usuarioId}`)
-      .then(res => setFacturas(res.data));
-  };
-
+      api.get(`/ObtenerClientes/${usuarioId}`).then(res => setClientes(res.data));
+      api.get(`/ObtenerFacturas/${usuarioId}`).then(res => setFacturas(res.data)); // <--- CARGAR HISTORIAL
+    };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("usuario"));
+    if (user) setUsuario(user);
+    obtenerDatos();
+  }, []);
 
-  const user = JSON.parse(localStorage.getItem("usuario"));
-
-  if (user) {
-    setUsuario(user);
-    cargarDatos(user.id);
-  }
-
-  obtenerDatos();
-
-}, [obtenerDatos]);
-
-const obtenerDatos = useCallback(async () => {
-  try {
-
-    const res = await api.get(
-      "/ObtenerClientesConFacturas"
-    );
-
-    const agrupados = agruparUsuarios(res.data);
-
-    setUsuarios(agrupados);
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
-}, []);
-
-  const Factura = () => {
-    navigate("/factura");
+  const obtenerDatos = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("usuario"));
+      const res = await api.get("/ObtenerClientesConFacturas");
+      const agrupados = agruparUsuarios(res.data);
+      setUsuarios(agrupados);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const navigate = useNavigate();
+
+  const Factura =()=>{
+  navigate ("/factura")
+  }
 
   const SubirFoto = async () => {
-    if (!archivo) {
-      alert("Seleccione una imagen");
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("foto", archivo);
-
-      const response = await api.put(
-        `/SubirFoto/${usuario.id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      const nombreFotoNueva = response.data.foto;
-
-      const userActualizado = {
-        ...usuario,
-        foto: nombreFotoNueva,
-      };
-
-      localStorage.setItem("usuario", JSON.stringify(userActualizado));
-
-      setUsuario(userActualizado);
-
-      alert("Foto actualizada con éxito");
-      setMostrarMenu(false);
-
-    } catch (error) {
-      console.error(error);
-      alert("Error al subir la foto");
-    }
-  };
-
-  const CerrarSesion = () => {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("Token");
-    setUsuario(null);
-    window.location.href = "/";
-  };
+      if (!archivo) {
+        alert("Seleccione una imagen");
+        return;
+      }
+      try {
+        const formData = new FormData();
+        formData.append("foto", archivo);
+        const response = await api.put(
+          `/SubirFoto/${usuario.id}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        const nombreFotoNueva = response.data.foto;
+        const userActualizado = { ...usuario, foto: nombreFotoNueva };
+        localStorage.setItem("usuario", JSON.stringify(userActualizado));
+  
+        setUsuario(userActualizado);
+  
+        alert("Foto actualizada con éxito");
+        setMostrarMenu(false);
+      } catch (error) {
+        console.error(error);
+        alert("Error al subir la foto");
+      }};
+  
+    const CerrarSesion = () => {
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("Token");
+      setUsuario(null);
+      window.location.href = "/"; 
+    };
+  
 
   const agruparUsuarios = (data) => {
 
-    const usuariosMap = {};
+  const usuariosMap = {};
 
-    data.forEach((item) => {
+  data.forEach((item) => {
 
-      if (!usuariosMap[item.id_cliente]) {
-        usuariosMap[item.id_cliente] = {
-          ...item,
-          facturas: [],
-        };
-      }
+    if (!usuariosMap[item.id_cliente]) {
 
-      const existeFactura = usuariosMap[item.id_cliente].facturas.some(
+      usuariosMap[item.id_cliente] = {
+        ...item,
+        facturas: [],
+      };
+
+    }
+
+    const existeFactura =
+      usuariosMap[item.id_cliente].facturas.some(
         factura => factura.id === item.factura_id
       );
 
-      if (!existeFactura) {
-        usuariosMap[item.id_cliente].facturas.push({
-          id: item.factura_id,
-          total: item.total,
-          estado: item.estado,
-          fecha: item.fecha,
-          metodo_pago: item.metodo_pago,
-          pdf: item.pdf,
-        });
-      }
-    });
+    if (!existeFactura) {
 
-    return Object.values(usuariosMap);
-  };
+      usuariosMap[item.id_cliente].facturas.push({
+        id: item.factura_id,
+        total: item.total,
+        estado: item.estado,
+        fecha: item.fecha,
+        metodo_pago: item.metodo_pago,
+        pdf: item.pdf
+      });
+
+    }
+
+  });
+
+  return Object.values(usuariosMap);
+};
 
   const subirPDF = async (e, id) => {
+  const file = e.target.files[0];
 
-    const file = e.target.files[0];
+  if (!file) return;
 
-    if (!file) return;
+  const formData = new FormData();
+  formData.append("pdf", file);
 
-    const formData = new FormData();
+  try {
+    await api.put(
+      `/SubirPDF/${id}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
-    formData.append("pdf", file);
+    alert("PDF subido correctamente");
+    obtenerDatos();
 
-    try {
+  } catch (error) {
+    console.log(error);
+    alert("Error al subir PDF");
+  }
+};
 
-      await api.put(
-        `/SubirPDF/${id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
 
-      alert("PDF subido correctamente");
+const exportarExcel = () => {
 
-      obtenerDatos();
+  const datos = [];
 
-    } catch (error) {
-      console.log(error);
-      alert("Error al subir PDF");
-    }
-  };
+  usuarios.forEach(user => {
 
-  const exportarExcel = () => {
+    user.facturas.forEach(factura => {
 
-    const datos = [];
-
-    usuarios.forEach(user => {
-
-      user.facturas.forEach(factura => {
-
-        datos.push({
-          "ID Factura": factura.id,
-          "Cliente": `${user.nombre} ${user.apellido}`,
-          "Total": factura.total,
-          "Estado": factura.estado,
-          "Método Pago": factura.metodo_pago,
-          "Fecha": new Date(factura.fecha).toLocaleDateString(),
-        });
-
+      datos.push({
+        "ID Factura": factura.id,
+        "Cliente": `${user.nombre} ${user.apellido}`,
+        "Total": factura.total,
+        "Estado": factura.estado,
+        "Método Pago": factura.metodo_pago,
+        "Fecha": new Date(factura.fecha).toLocaleDateString()
       });
 
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(datos);
+  });
 
-    const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(datos);
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Facturas");
+  const workbook = XLSX.utils.book_new();
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Facturas"
+  );
 
-    const data = new Blob(
-      [excelBuffer],
-      {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-      }
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+  });
+
+  const data = new Blob(
+    [excelBuffer],
+    {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"
+    }
+  );
+
+  saveAs(data, "facturas.xlsx");
+};
+
+
+const usuariosFiltrados = usuarios.filter(user => {
+
+  // Buscar por documento o nombre
+  const coincideBusqueda =
+    user.documento?.toString().includes(busqueda) ||
+    `${user.nombre} ${user.apellido}`
+      .toLowerCase()
+      .includes(busqueda.toLowerCase());
+
+  // Tipo documento
+  const coincideTipo =
+    tipoDocumento === "Todos" ||
+    user.tipo_documento === tipoDocumento;
+
+  // Estado factura
+  const coincideEstado =
+    estadoFiltro === "Todos" ||
+    user.facturas.some(
+      factura => factura.estado === estadoFiltro
     );
 
-    saveAs(data, "facturas.xlsx");
-  };
-
-  const usuariosFiltrados = usuarios.filter(user => {
-
-    const coincideBusqueda =
-      user.documento?.toString().includes(busqueda) ||
-      `${user.nombre} ${user.apellido}`
-        .toLowerCase()
-        .includes(busqueda.toLowerCase());
-
-    const coincideTipo =
-      tipoDocumento === "Todos" ||
-      user.tipo_documento === tipoDocumento;
-
-    const coincideEstado =
-      estadoFiltro === "Todos" ||
-      user.facturas.some(
-        factura => factura.estado === estadoFiltro
-      );
-
-    return coincideBusqueda && coincideTipo && coincideEstado;
-  });
+  return coincideBusqueda && coincideTipo && coincideEstado;
+});
 
   return (
     <div className="dashboard-container">
@@ -266,7 +250,7 @@ const obtenerDatos = useCallback(async () => {
                    // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
                    src={
                      usuario.foto
-                       ? `${process.env.REACT_APP_API_URL}/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                       ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                    }
                    alt="perfil"
@@ -429,7 +413,7 @@ const obtenerDatos = useCallback(async () => {
       {/* VER PDF AL LADO */}
       {factura.pdf && (
         <a
-          href={`/pdf/${factura.pdf}`}
+          href={`http://localhost:3014/pdf/${factura.pdf}`}
           target="_blank"
           rel="noreferrer"
           style={{
@@ -519,4 +503,4 @@ const obtenerDatos = useCallback(async () => {
   );
 };
 
-export default DetalleFactura;
+export default FacturasUsuarios;
