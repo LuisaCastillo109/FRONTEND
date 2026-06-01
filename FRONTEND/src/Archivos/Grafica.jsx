@@ -4,6 +4,8 @@ import axios from "axios";
 import { Doughnut } from "react-chartjs-2";
 import { TrendingUp, Package, FileText, DollarSign } from "lucide-react";
 import Menu from "../componentes/menu"; 
+import api from "../api/api"
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -27,7 +29,7 @@ const DashboardGraficas = () => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [ventasMensuales, setVentasMensuales] = useState([]);
   const [ventasProductos, setVentasProductos] = useState([]);
-  const [,setDatosResumen] = useState("");
+  const [datosResumen, setDatosResumen] = useState("");
  const [datos, setDatos] = useState({
     facturas: 0,
     ventas: 0
@@ -39,15 +41,15 @@ const DashboardGraficas = () => {
 
   if (!user) return;
 
-  axios.get(`http://localhost:3014/VentasMensuales/${user.id}`)
+  api.get(`/VentasMensuales/${user.id}`)
     .then(res => setVentasMensuales(res.data))
     .catch(err => console.error(err));
 
-  axios.get(`http://localhost:3014/VentasPorProducto/${user.id}`)
+  api.get(`/VentasPorProducto/${user.id}`)
     .then(res => setVentasProductos(res.data))
     .catch(err => console.error(err));
 
-  axios.get(`http://localhost:3014/Resumen/${user.id}`)
+  api.get(`/Resumen/${user.id}`)
     .then(res => setDatosResumen(res.data))
     .catch(err => console.error(err));
 
@@ -61,8 +63,8 @@ const DashboardGraficas = () => {
     try {
       const formData = new FormData();
       formData.append("foto", archivo);
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `/SubirFoto/${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -94,7 +96,7 @@ const DashboardGraficas = () => {
 
   if (!user) return;
 
-  axios.get(`http://localhost:3014/ObtenerDashboard/${user.id}`)
+  api.get(`/ObtenerDashboard/${user.id}`)
     .then(res => setDatos(res.data))
     .catch(err => console.log(err));
 
