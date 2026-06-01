@@ -19,13 +19,17 @@ const Factura = () => {
   const [usuario, setUsuario] = useState(null);
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const [archivo, setArchivo] = useState(null);
+  const [numeroTarjeta, setNumeroTarjeta] = useState("");
+  const [nombreTarjeta, setNombreTarjeta] = useState("");
+  const [fechaTarjeta, setFechaTarjeta] = useState("");
+  const [cvv, setCvv] = useState("");
   const [clienteEditado, setClienteEditado] = useState({
   documento: "",
   telefono: "",
   direccion: "",
   email: ""
 });
-const [facturaAbierta] = useState(null);
+const [facturaAbierta, setFacturaAbierta] = useState(null);
 
 useEffect(() => {
 const user = JSON.parse(localStorage.getItem("usuario"));
@@ -162,6 +166,20 @@ api.get(`/ObtenerFacturas/${usuarioId}`)
   }
 };
 
+const enviarFactura = async (id) => {
+  try {
+
+    const response = await api.post(
+      `/enviar-factura/${id}`
+    );
+
+    alert(response.data.mensaje);
+
+  } catch (error) {
+    console.log(error);
+    alert("Error al enviar factura");
+  }
+};
   const CerrarSesion =()=>{
   localStorage.removeItem("usuario");
   localStorage.removeItem("Token")
