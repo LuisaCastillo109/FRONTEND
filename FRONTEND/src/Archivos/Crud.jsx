@@ -37,7 +37,7 @@ const GestionClientesAdmin = () => {
 
   const obtenerClientes = useCallback(async () => {
   try {
-    const response = await api1.get(`/ObtenerClientes/${usuario.id}`);
+    const response = await api.get(`/ObtenerClientes/${usuario.id}`);
     setClientes(response.data);
   } catch (err) {
     console.error("Error al obtener los clientes", err);
