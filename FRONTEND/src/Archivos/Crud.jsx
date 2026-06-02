@@ -1,11 +1,10 @@
 import axios from "axios";
-import React, { useState, useEffect, useCallback} from "react";
-import "../css/crud.css"
+import React, { useState, useEffect } from "react";
+import "../css/crud.css";
 import { Link } from "react-router-dom";
 import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
 import api from "../api/api"
-
 
 const GestionClientesAdmin = () => {
   const [clientes, setClientes] = useState([]);
@@ -25,25 +24,19 @@ const GestionClientesAdmin = () => {
     telefono : ""
   });
 
-  const API = "http://localhost:3014";
-  const Token = localStorage.getItem("Token");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const api1 = axios.create({
-    baseURL: API,
-    headers: {
-      Authorization: `Bearer ${Token}`
+
+
+  // --- LÓGICA DE API ---
+
+  const obtenerClientes = async () => {
+    try {
+      // Cambiado de /ObtenerUsuarios a /ObtenerClientes
+      const response = await api.get(`/ObtenerClientes/${usuario.id}`);
+      setClientes(response.data);
+    } catch (err) {
+      console.error("Error al obtener los clientes", err);
     }
-  });
-
-  const obtenerClientes = useCallback(async () => {
-  try {
-    const response = await api.get(`/ObtenerClientes/${usuario.id}`);
-    setClientes(response.data);
-  } catch (err) {
-    console.error("Error al obtener los clientes", err);
-  }
-}, [api, usuario.id]);
-
+  };
 
   const crearCliente = async (e) => {
     e.preventDefault();
@@ -76,22 +69,17 @@ const GestionClientesAdmin = () => {
     window.location.href = "/";
   };
 
+  // --- EFECTOS ---
 
   useEffect(() => {
+    obtenerClientes();
+    const user = localStorage.getItem("usuario");
+    if (user) setUsuarioAdmin(JSON.parse(user));
+    document.body.classList.add("body-twice");
+    return () => document.body.classList.remove("body-twice");
+  }, []);
 
-  obtenerClientes();
-
-  const user = localStorage.getItem("usuario");
-
-  if (user) {
-    setUsuarioAdmin(JSON.parse(user));
-  }
-
-  document.body.classList.add("body-twice");
-
-  return () => document.body.classList.remove("body-twice");
-
-}, [obtenerClientes]);
+  // --- FILTRO ---
 
   const clientesFiltrados = clientes.filter((c) =>
     c.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
