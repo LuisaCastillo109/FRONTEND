@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../css/perfil.css"
+import api from "../api/api"
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -29,8 +30,8 @@ const Perfil = () => {
     formData.append("foto", fotoArchivo);
 
     try {
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `/SubirFoto/${usuario.id}`,
         formData,
         {
           headers: {
@@ -54,8 +55,8 @@ const Perfil = () => {
   // 👇 actualizar datos
   const actualizarDatos = async () => {
     try {
-      const res = await axios.put(
-        `http://localhost:3014/ActualizarPerfil/${usuario.id}`,
+      const res = await api.put(
+        `/ActualizarPerfil/${usuario.id}`,
         { correo, telefono }
       );
 
@@ -89,7 +90,7 @@ const Perfil = () => {
           <img
             src={
               usuario.foto
-                ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                ? `/uploads/${usuario.foto}?t=${new Date().getTime()}`
                 : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="perfil"
