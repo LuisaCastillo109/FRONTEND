@@ -26,7 +26,7 @@ const GestionClientesAdmin = () => {
 
 
 
-  // --- LÓGICA DE API ---
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
 
   const obtenerClientes = async () => {
     try {
@@ -102,7 +102,7 @@ const GestionClientesAdmin = () => {
           <div className="usuario-navbar" onClick={() => setMostrarMenu(!mostrarMenu)}>
             <span style={{ fontWeight: 'bold' }}>{usuarioAdmin.nombre}</span>
             <img 
-              src={usuarioAdmin.foto ? `${API}/uploads/${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+              src={usuarioAdmin.foto ? `${api}/uploads/${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
               alt="perfil" className="foto-perfil" 
             />
             {mostrarMenu && (
