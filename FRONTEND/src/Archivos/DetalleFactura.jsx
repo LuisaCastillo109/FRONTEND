@@ -38,7 +38,7 @@ const FacturasUsuarios = () => {
     const user = JSON.parse(localStorage.getItem("usuario"));
 
     const res = await api.get(
-      `/ObtenerClientesConFacturas/${user.id}`
+      `/ObtenerClientesConFacturas/${user.usuario_id}`
     );
 
     const agrupados = agruparUsuarios(res.data);
