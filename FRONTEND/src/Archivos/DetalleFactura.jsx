@@ -40,6 +40,7 @@ const FacturasUsuarios = () => {
     const res = await api.get(
       `/ObtenerClientesConFacturas/${user.id}`
     );
+    console.log("RESPUESTA API:", res.data);
 
     const agrupados = agruparUsuarios(res.data);
 
