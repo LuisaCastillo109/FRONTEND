@@ -33,15 +33,21 @@ const FacturasUsuarios = () => {
   }, []);
 
   const obtenerDatos = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("usuario"));
-      const res = await api.get("/ObtenerClientesConFacturas");
-      const agrupados = agruparUsuarios(res.data);
-      setUsuarios(agrupados);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+
+    const user = JSON.parse(localStorage.getItem("usuario"));
+
+    const res = await api.get(
+      `/ObtenerClientesConFacturas/${user.id}`
+    );
+
+    const agrupados = agruparUsuarios(res.data);
+
+    setUsuarios(agrupados);
+
+  } catch (error) {
+    console.log(error);
+  }};
 
   const navigate = useNavigate();
 
