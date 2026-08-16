@@ -8,7 +8,7 @@ import api from "../api/api"
 const InicioSesion =()=>{
 
 const [correo,setCorreo]=useState("");
-const [contrasena,setContraseña]=useState("");
+const [contraseña,setContraseña]=useState("");
 
 const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const LoginUsuario =async(e)=>{
 e.preventDefault();
 try{
 const response = await api.post("/login",
-{correo,contrasena}
+{correo,contraseña}
 );
 
 alert ("Ingreso Exitoso");
@@ -67,7 +67,7 @@ return (
       <input 
         type="password"
         placeholder="Contraseña"
-        value={contrasena}
+        value={contraseña}
         onChange={(e)=>setContraseña(e.target.value)}
         required
       />
