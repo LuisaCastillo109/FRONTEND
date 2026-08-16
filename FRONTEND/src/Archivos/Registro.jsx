@@ -9,7 +9,7 @@ const Registro =()=>{
 const [nombre,setNombre]=useState("");
 const [apellido,setApellido]=useState("");
 const [correo,setCorreo]=useState("");
-const [contrasena,setContraseña]=useState("");
+const [contraseña,setContraseña]=useState("");
 
 const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const CrearUsuario = async (e) => {
     nombre,
     apellido,
     correo,
-    contrasena
+    contraseña
   });
 
   try {
@@ -38,7 +38,7 @@ const CrearUsuario = async (e) => {
       nombre,
       apellido,
       correo,
-      contrasena
+      contraseña
     });
 
     console.log("✅ RESPUESTA DEL BACKEND:");
@@ -111,7 +111,7 @@ return (
       <input
         type="password"
         placeholder="Contraseña"
-        value ={contrasena}
+        value ={contraseña}
         onChange={(e)=>setContraseña(e.target.value)}
         required
       />
