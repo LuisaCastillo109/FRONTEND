@@ -129,7 +129,7 @@ const Productos = () => {
       const formData = new FormData();
       formData.append("foto", archivo);
       const response = await api.put(
-        `subirFoto/${usuario.id}`,
+        `/subirFoto/${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -187,7 +187,7 @@ const Productos = () => {
                     // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
                     src={
                       usuario.foto
-                        || `${usuario.foto}?t=${new Date().getTime()}`
+                        ?`${usuario.foto}?t=${new Date().getTime()}`
                         : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt="perfil"
