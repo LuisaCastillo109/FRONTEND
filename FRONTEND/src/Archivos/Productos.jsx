@@ -79,7 +79,7 @@ const Productos = () => {
     setDescripcion(p.descripcion);
     setStock(p.stock);
     setEstado(p.estado);
-    setPreview(p.imagen ? `/uploads/${p.imagen}` : null);
+    setPreview(p.imagen || null);
   };
 
   const ActualizarProductos = async () => {
@@ -128,8 +128,8 @@ const Productos = () => {
     try {
       const formData = new FormData();
       formData.append("foto", archivo);
-      const response = await axios.put(
-        `http://localhost:3014/subirFoto/${usuario.id}`,
+      const response = await api.put(
+        `subirFoto/${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -187,7 +187,7 @@ const Productos = () => {
                     // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
                     src={
                       usuario.foto
-                        ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                        || `${usuario.foto}?t=${new Date().getTime()}`
                         : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt="perfil"
@@ -283,7 +283,7 @@ const Productos = () => {
             <tr key={p.id}>
               <td>{index + 1}</td>
               <td>
-                <img className="img-producto" src={p.imagen ? `/uploads/${p.imagen}` : "https://via.placeholder.com/50"} alt="" />
+               <img className="img-producto" src={p.imagen || "https://via.placeholder.com/50"} alt={p.nombre} />
               </td>
               <td><strong>{p.nombre}</strong></td>
               <td>${p.precio}</td>
