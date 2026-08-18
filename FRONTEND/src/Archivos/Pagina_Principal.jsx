@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/principal.css";
 import axios from "axios";
+import api from "../api/api.js"
 
 const PaginaPrincipal = () => {
   const [usuario, setUsuario] = useState(null);
@@ -23,8 +24,8 @@ const PaginaPrincipal = () => {
     try {
       const formData = new FormData();
       formData.append("foto", archivo);
-      const response = await axios.put(
-        `http://localhost:3014/SubirFoto/${usuario.id}`,
+      const response = await api.put(
+        `${usuario.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -78,7 +79,7 @@ const PaginaPrincipal = () => {
               // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
               src={
                 usuario.foto
-                  ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                  ? `${usuario.foto}?t=${new Date().getTime()}`
                   : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
               }
               alt="perfil"
