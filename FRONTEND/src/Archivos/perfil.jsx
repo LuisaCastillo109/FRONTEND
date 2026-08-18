@@ -90,7 +90,7 @@ const Perfil = () => {
           <img
             src={
               usuario.foto
-                ? `/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                ? `${usuario.foto}?t=${new Date().getTime()}`
                 : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="perfil"
