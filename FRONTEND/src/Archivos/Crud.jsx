@@ -102,7 +102,7 @@ const GestionClientesAdmin = () => {
           <div className="usuario-navbar" onClick={() => setMostrarMenu(!mostrarMenu)}>
             <span style={{ fontWeight: 'bold' }}>{usuarioAdmin.nombre}</span>
             <img 
-              src={usuarioAdmin.foto ? `${api}/uploads/${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+              src={usuarioAdmin.foto ? `${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
               alt="perfil" className="foto-perfil" 
             />
             {mostrarMenu && (
