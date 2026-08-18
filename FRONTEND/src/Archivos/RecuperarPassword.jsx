@@ -2,6 +2,7 @@ import React,{useState} from "react";
 import axios from "axios";
 import "../css/ejemplo.css";
 import { FaFacebook, FaEnvelope } from "react-icons/fa";
+import api from "../api/api"
 
 const RecuperarContraseña =()=>{
 const [correo,setCorreo]=useState("");
@@ -10,7 +11,7 @@ const [correo,setCorreo]=useState("");
 const RecuperarPassword =async(e)=>{
 e.preventDefault();
 try{
-const response = await axios.post("http://localhost:3014/RecuperarPassword",
+const response = await api.post("/RecuperarPassword",
 {correo}
 )
 alert(response.data)
