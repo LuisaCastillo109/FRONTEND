@@ -257,7 +257,7 @@ const usuariosFiltrados = usuarios.filter(user => {
                    // Usamos una clave única (timestamp) para forzar a React a recargar la imagen del servidor
                    src={
                      usuario.foto
-                       ? `http://localhost:3014/uploads/${usuario.foto}?t=${new Date().getTime()}`
+                       ? `${usuario.foto}?t=${new Date().getTime()}`
                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                    }
                    alt="perfil"
