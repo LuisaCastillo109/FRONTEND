@@ -44,7 +44,7 @@ api
       const formData = new FormData();
       formData.append("foto", archivo);
       const response = await api.put(
-        `/SubirFoto/${usuario.id}`,
+        `/SubirFoto${usuario.id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -93,7 +93,7 @@ api
             <span style={{ fontWeight: 'bold' }}>{usuario.nombre}</span>
             <img
               className="foto-perfil"
-              src={usuario.foto ? `/uploads/${usuario.foto}?t=${new Date().getTime()}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              src={usuario.foto ? `${usuario.foto}?t=${new Date().getTime()}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
               alt="perfil"
               style={{ width: '45px', height: '45px', borderRadius: '50%', border: '2px solid #fff', objectFit: 'cover' }}
               onClick={() => setMostrarMenu(!mostrarMenu)}
