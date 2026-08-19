@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "../css/ejemplo.css";
+import api from "../api/api"
 import { FaFacebook, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
-import "../api/api"
 
 const ReestablecerContraseña = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const ReestablecerContraseña = () => {
 
     try {
       const response = await api.post(
-        "/ReestablecerPassword",
+        "http://localhost:3014/ReestablecerPassword",
         {
           Token: Token,
           contraseña,
