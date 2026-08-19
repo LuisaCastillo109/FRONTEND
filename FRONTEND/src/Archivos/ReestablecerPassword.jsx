@@ -25,30 +25,41 @@ const ReestablecerContraseña = () => {
       return;
     }
 
-    try {
-      const response = await api.post(
-        "http://localhost:3014/ReestablecerPassword",
+   try {
+
+    console.log(
+        "🔥 URL QUE USA ESTA PÁGINA:",
+        api.defaults.baseURL
+    );
+
+    console.log("🔥 TOKEN:", Token);
+    console.log("🔥 CONTRASEÑA:", contraseña);
+
+    const response = await api.post(
+        "/ReestablecerPassword",
         {
-          Token: Token,
-          contraseña,
+            Token: Token,
+            contraseña: contraseña
         }
-      );
+    );
 
-      setMensaje(response.data);
+    setMensaje(response.data);
 
-      if (response.status === 200) {
+    if (response.status === 200) {
         alert("Contraseña cambiada con éxito");
         navigate("/InicioSesion");
-      }
-    } catch (err) {
-      if (err.response.data) {
-        alert(err.response.data);
-      } else {
-        setMensaje("Error en el servidor");
-      }
     }
-  };
 
+} catch (err) {
+
+    console.log("🔥 ERROR:", err);
+
+    if (err.response) {
+        alert(err.response.data);
+    } else {
+        alert("Error en el servidor");
+    }
+}
   return (
     <div className="ejemplo">
       <div className="logo-container">
