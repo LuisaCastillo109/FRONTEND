@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React,{useState} from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import "../css/ejemplo.css";
-import { FaFacebook, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaFacebook, FaEnvelope } from "react-icons/fa";
 import api from "../api/api"
 
 const ReestablecerContraseña = () => {
