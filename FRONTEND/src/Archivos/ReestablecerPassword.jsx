@@ -1,9 +1,9 @@
-import React,{useState} from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import "../css/ejemplo.css";
-import { FaFacebook, FaEnvelope } from "react-icons/fa";
-import api from "../api/api"
+import { FaFacebook, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
+import "../api/api"
 
 const ReestablecerContraseña = () => {
   const navigate = useNavigate();
@@ -26,9 +26,6 @@ const ReestablecerContraseña = () => {
     }
 
     try {
-      console.log("🔥 BASE URL:", api.defaults.baseURL);
-      console.log("🔥 TOKEN:", Token);
-      console.log("🔥 CONTRASEÑA:", contraseña);
       const response = await api.post(
         "/ReestablecerPassword",
         {
