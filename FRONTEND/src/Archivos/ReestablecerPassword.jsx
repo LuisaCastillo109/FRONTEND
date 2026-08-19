@@ -59,7 +59,7 @@ const ReestablecerContraseña = () => {
     } else {
         alert("Error en el servidor");
     }
-}
+}}
   return (
     <div className="ejemplo">
       <div className="logo-container">
