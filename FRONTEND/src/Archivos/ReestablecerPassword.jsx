@@ -26,6 +26,9 @@ const ReestablecerContraseña = () => {
     }
 
     try {
+      console.log("🔥 BASE URL:", api.defaults.baseURL);
+      console.log("🔥 TOKEN:", Token);
+      console.log("🔥 CONTRASEÑA:", contraseña);
       const response = await api.post(
         "/ReestablecerPassword",
         {
