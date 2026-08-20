@@ -20,7 +20,7 @@ const ReestablecerContraseña = () => {
     e.preventDefault();
 
     // 🔐 Validación
-    if (passoword !== confirmPassword) {
+    if (password !== confirmPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
@@ -33,13 +33,13 @@ const ReestablecerContraseña = () => {
     );
 
     console.log("🔥 TOKEN:", Token);
-    console.log("🔥 CONTRASEÑA:", passoword);
+    console.log("🔥 CONTRASEÑA:", password);
 
     const response = await api.post(
         "/ReestablecerPassword",
         {
             Token: Token,
-            passoword: passoword
+            password: password
         }
     );
 
@@ -81,7 +81,7 @@ const ReestablecerContraseña = () => {
                 <input
                   type={mostrarPassword ? "text" : "password"}
                   placeholder="Nueva Contraseña"
-                  value={passoword}
+                  value={password}
                   onChange={(e) => setContraseña(e.target.value)}
                   required
                 />
