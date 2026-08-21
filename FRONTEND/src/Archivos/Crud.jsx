@@ -25,14 +25,7 @@ const GestionClientesAdmin = () => {
     telefono : ""
   });
 
-  const Token = localStorage.getItem("Token");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const api = axios.create({
-    baseURL: API,
-    headers: {
-      Authorization: `Bearer ${Token}`
-    }
-  });
+
 
   // --- LÓGICA DE API ---
 
