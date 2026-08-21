@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../css/crud.css";
+import "../api/api"
 import { Link } from "react-router-dom";
 import { FaUserPlus, FaSearch, FaTrash, FaIdCard, FaEdit } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
@@ -24,7 +25,6 @@ const GestionClientesAdmin = () => {
     telefono : ""
   });
 
-  const API = "http://localhost:3014";
   const Token = localStorage.getItem("Token");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
   const api = axios.create({
@@ -193,7 +193,7 @@ const cancelarEdicion = () => {
           <div className="usuario-navbar" onClick={() => setMostrarMenu(!mostrarMenu)}>
             <span style={{ fontWeight: 'bold' }}>{usuarioAdmin.nombre}</span>
             <img 
-              src={usuarioAdmin.foto ? `${API}/uploads/${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+              src={usuarioAdmin.foto ? `${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
               alt="perfil" className="foto-perfil" 
             />
             {mostrarMenu && (
