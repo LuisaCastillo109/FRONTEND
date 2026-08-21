@@ -420,7 +420,7 @@ const usuariosFiltrados = usuarios.filter(user => {
       {/* VER PDF AL LADO */}
       {factura.pdf && (
         <a
-          href={`http://localhost:3014/pdf/${factura.pdf}`}
+          href={factura.pdf}
           target="_blank"
           rel="noreferrer"
           style={{
