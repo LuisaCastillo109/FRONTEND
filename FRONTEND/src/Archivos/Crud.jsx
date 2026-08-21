@@ -2,15 +2,15 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../css/crud.css";
 import { Link } from "react-router-dom";
-import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
+import { FaUserPlus, FaSearch, FaTrash, FaIdCard, FaEdit } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
-import api from "../api/api"
 
 const GestionClientesAdmin = () => {
   const [clientes, setClientes] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [usuarioAdmin, setUsuarioAdmin] = useState(null);
   const [mostrarMenu, setMostrarMenu] = useState(false);
+  const [clienteEditando, setClienteEditando] = useState(null);
   
   // Estado para el formulario de nuevo cliente
   const [nuevoCliente, setNuevoCliente] = useState({
@@ -24,9 +24,17 @@ const GestionClientesAdmin = () => {
     telefono : ""
   });
 
-
-
+  const API = "http://localhost:3014";
+  const Token = localStorage.getItem("Token");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const api = axios.create({
+    baseURL: API,
+    headers: {
+      Authorization: `Bearer ${Token}`
+    }
+  });
+
+  // --- LÓGICA DE API ---
 
   const obtenerClientes = async () => {
     try {
@@ -51,6 +59,89 @@ const GestionClientesAdmin = () => {
       alert("Error al crear el cliente");
     }
   };
+
+  const editarCliente = (cliente) => {
+
+  setClienteEditando(cliente.id);
+
+  setNuevoCliente({
+    nombre: cliente.nombre || "",
+    apellido: cliente.apellido || "",
+    tipo_documento: cliente.tipo_documento || "",
+    documento: cliente.documento || "",
+    direccion: cliente.direccion || "",
+    email: cliente.email || "",
+    genero: cliente.genero || "",
+    telefono: cliente.telefono || ""
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
+
+
+const actualizarCliente = async (e) => {
+
+  e.preventDefault();
+
+  try {
+
+    await api.put(
+      `/ActualizarClientes/${clienteEditando}`,
+      {
+        ...nuevoCliente,
+        usuario_id: usuario.id
+      }
+    );
+
+    alert("Cliente actualizado con éxito");
+
+    setNuevoCliente({
+      nombre: "",
+      apellido: "",
+      tipo_documento: "",
+      documento: "",
+      direccion: "",
+      email: "",
+      genero: "",
+      telefono: ""
+    });
+
+    setClienteEditando(null);
+
+    obtenerClientes();
+
+  } catch (err) {
+
+    console.error(
+      "Error al actualizar cliente:",
+      err
+    );
+
+    alert("Error al actualizar el cliente");
+
+  }
+};
+
+const cancelarEdicion = () => {
+
+  setClienteEditando(null);
+
+  setNuevoCliente({
+    nombre: "",
+    apellido: "",
+    tipo_documento: "",
+    documento: "",
+    direccion: "",
+    email: "",
+    genero: "",
+    telefono: ""
+  });
+
+};
+
 
   const EliminarClientes = async (id) => {
     if (window.confirm("¿Estás seguro de eliminar este cliente?")) {
@@ -102,7 +193,7 @@ const GestionClientesAdmin = () => {
           <div className="usuario-navbar" onClick={() => setMostrarMenu(!mostrarMenu)}>
             <span style={{ fontWeight: 'bold' }}>{usuarioAdmin.nombre}</span>
             <img 
-              src={usuarioAdmin.foto ? `${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+              src={usuarioAdmin.foto ? `${API}/uploads/${usuarioAdmin.foto}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
               alt="perfil" className="foto-perfil" 
             />
             {mostrarMenu && (
@@ -135,8 +226,21 @@ const GestionClientesAdmin = () => {
 
           {/* FORMULARIO DE CREACIÓN */}
           <div className="card form-crear">
-            <h3><FaUserPlus /> Registrar Nuevo Cliente</h3>
-            <form onSubmit={crearCliente} className="grid-form">
+            <h3>
+  {clienteEditando ? (
+    <>
+      <FaEdit /> Modificar Cliente
+    </>
+  ) : (
+    <>
+      <FaUserPlus /> Registrar Nuevo Cliente
+    </>
+  )}
+</h3>
+             <form
+              onSubmit={clienteEditando ? actualizarCliente : crearCliente}
+              className="grid-form"
+             >
               <input 
                 type="text" placeholder="Nombre" required
                 value={nuevoCliente.nombre}
@@ -204,7 +308,21 @@ const GestionClientesAdmin = () => {
   <option value="femenino">Femenino</option>
 </select>
 
-              <button type="submit" className="btn-save">Guardar Cliente</button>
+             <button type="submit" className="btn-save">
+  {clienteEditando
+    ? "Actualizar Cliente"
+    : "Guardar Cliente"}
+</button>
+
+{clienteEditando && (
+  <button
+    type="button"
+    className="btn-cancel"
+    onClick={cancelarEdicion}
+  >
+    Cancelar
+  </button>
+)}
             </form>
           </div>
 
@@ -273,11 +391,41 @@ const GestionClientesAdmin = () => {
     </>
   )}
 </td>
-                      <td>
-                        <button className="btn-delete" onClick={() => EliminarClientes(c.id)}>
-                          <FaTrash />
-                        </button>
-                      </td>
+                     <td>
+
+  <div
+    style={{
+      display: "flex",
+      gap: "8px"
+    }}
+  >
+
+    {/* MODIFICAR */}
+
+    <button
+      type="button"
+      className="btn-edit"
+      onClick={() => editarCliente(c)}
+      title="Modificar cliente"
+    >
+      <FaEdit />
+    </button>
+
+
+    {/* ELIMINAR */}
+
+    <button
+      type="button"
+      className="btn-delete"
+      onClick={() => EliminarClientes(c.id)}
+      title="Eliminar cliente"
+    >
+      <FaTrash />
+    </button>
+
+  </div>
+
+</td>
                     </tr>
                   ))
                 ) : (
