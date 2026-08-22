@@ -170,7 +170,7 @@ const enviarFactura = async (id) => {
   try {
 
     const response = await api.post(
-      `/enviar-factura/${id}`
+      `/EnviarFacturaFisica/${id}`
     );
 
     alert(response.data.mensaje);

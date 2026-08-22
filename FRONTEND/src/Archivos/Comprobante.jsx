@@ -15,26 +15,30 @@ const Comprobante = () => {
 
 
  const notificarYEnviarCorreo = async () => {
-  try {
 
-    const res = await api.post(
-      `/EnviarFacturaFisica/${factura.id}`
-    );
+    try {
 
-    console.log("RESPUESTA:", res.data);
+        const res = await api.post(
+            `/EnviarFacturaFisica/${factura.id}`
+        );
 
-    alert("Factura enviada al correo del cliente con éxito!");
+        console.log("RESPUESTA:", res.data);
 
-  } catch (err) {
+        alert(res.data.mensaje);
 
-    console.error("ERROR COMPLETO:", err);
+    } catch (err) {
 
-    if (err.response) {
-      alert(err.response.data);
-    } else {
-      alert("No se pudo conectar con el servidor");
+        console.error("ERROR COMPLETO:", err);
+
+        if (err.response) {
+            alert(
+                err.response.data?.mensaje ||
+                err.response.data
+            );
+        } else {
+            alert("No se pudo conectar con el servidor");
+        }
     }
-  }
 };
 
   return (
