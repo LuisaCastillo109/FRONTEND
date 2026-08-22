@@ -14,23 +14,28 @@ const Comprobante = () => {
   const formatear = (num) => new Intl.NumberFormat("es-CO").format(num);
 
 
-  const notificarYEnviarCorreo = async () => {
-    try {
-      const res = await api.post(`/EnviarFacturaFisica/${factura.id}`, 
-      {
-      id_cliente: 
-      factura.id_cliente || factura.cliente_id 
-      });
+ const notificarYEnviarCorreo = async () => {
+  try {
 
-      alert("Factura enviada al correo del cliente con éxito!");
-      console.log(res.data)
-    } catch (err) {
-      if (err.res.data){
-      alert (err.res.data)
-      }
-      console.error(err);
-      alert("El archivo aún no está en la carpeta o el nombre no coincide (Debe ser factura_ID.pdf)");
-    }};
+    const res = await api.post(
+      `/EnviarFacturaFisica/${factura.id}`
+    );
+
+    console.log("RESPUESTA:", res.data);
+
+    alert("Factura enviada al correo del cliente con éxito!");
+
+  } catch (err) {
+
+    console.error("ERROR COMPLETO:", err);
+
+    if (err.response) {
+      alert(err.response.data);
+    } else {
+      alert("No se pudo conectar con el servidor");
+    }
+  }
+};
 
   return (
     <div className="comprobante-container">
