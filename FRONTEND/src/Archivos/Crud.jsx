@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "../css/crud.css";
-import "../api/api"
 import { Link } from "react-router-dom";
-import { FaUserPlus, FaSearch, FaTrash, FaIdCard, FaEdit } from "react-icons/fa";
+import { FaUserPlus, FaSearch, FaTrash, FaIdCard } from "react-icons/fa";
 import { FaMale, FaFemale } from "react-icons/fa";
+import api from "../api/api"
 
 const GestionClientesAdmin = () => {
   const [clientes, setClientes] = useState([]);
@@ -27,7 +27,7 @@ const GestionClientesAdmin = () => {
 
 
 
-  // --- LÓGICA DE API ---
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
 
   const obtenerClientes = async () => {
     try {
@@ -219,20 +219,16 @@ const cancelarEdicion = () => {
 
           {/* FORMULARIO DE CREACIÓN */}
           <div className="card form-crear">
-            <h3>
-  {clienteEditando ? (
-    <>
-      <FaEdit /> Modificar Cliente
-    </>
-  ) : (
-    <>
-      <FaUserPlus /> Registrar Nuevo Cliente
-    </>
-  )}
-</h3>
-             <form
-              onSubmit={clienteEditando ? actualizarCliente : crearCliente}
-              className="grid-form"
+            <h3> 
+            {clienteEditando ? (
+             <>
+            <FaEdit /> Modificar Cliente
+            </>
+            ) : (
+            <>
+           <FaUserPlus /> Registrar Nuevo Cliente</>
+             )}  </h3>
+            <form onSubmit={clienteEditando ? actualizarCliente : crearCliente}className="grid-form"
              >
               <input 
                 type="text" placeholder="Nombre" required
@@ -301,7 +297,7 @@ const cancelarEdicion = () => {
   <option value="femenino">Femenino</option>
 </select>
 
-             <button type="submit" className="btn-save">
+              <button type="submit" className="btn-save">
   {clienteEditando
     ? "Actualizar Cliente"
     : "Guardar Cliente"}
@@ -383,8 +379,9 @@ const cancelarEdicion = () => {
       Masculino
     </>
   )}
-</td>
-                     <td>
+</td> 
+
+      <td>
 
   <div
     style={{
