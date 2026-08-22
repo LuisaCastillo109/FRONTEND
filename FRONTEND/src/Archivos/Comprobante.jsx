@@ -4,41 +4,129 @@ import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios"; // Lo necesitamos para avisarle al backend
 import "../css/comprobante.css"
 import api from "../api/api"
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const Comprobante = () => {
   const { state } = useLocation();
   const { factura } = state || {};
   const vendedor = JSON.parse(localStorage.getItem("usuario"));
 
+  React.useEffect(() => {
+  const guardarPDF = async () => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      await generarYSubirPDF();
+
+      console.log(
+        `✅ PDF DE FACTURA ${factura.id} GUARDADO EN VERCEL BLOB`
+      );
+
+    } catch (error) {
+      console.error("❌ NO SE PUDO GUARDAR EL PDF:", error);
+    }
+  };
+
+  if (factura?.id) {
+    guardarPDF();
+  }
+}, [factura?.id]);
+
+
   if (!factura) return <h2>No hay datos</h2>;
   const formatear = (num) => new Intl.NumberFormat("es-CO").format(num);
 
 
  const notificarYEnviarCorreo = async () => {
+  try {
 
-    try {
+    // Nos aseguramos de que exista el PDF
+    await generarYSubirPDF();
 
-        const res = await api.post(
-            `/EnviarFacturaFisica/${factura.id}`
-        );
+    // Ahora sí lo enviamos
+    const res = await api.post(
+      `/EnviarFacturaFisica/${factura.id}`
+    );
 
-        console.log("RESPUESTA:", res.data);
+    console.log("RESPUESTA:", res.data);
 
-        alert(res.data.mensaje);
+    alert("Factura enviada al correo del cliente con éxito");
 
-    } catch (err) {
+  } catch (err) {
 
-        console.error("ERROR COMPLETO:", err);
+    console.error("ERROR COMPLETO:", err);
 
-        if (err.response) {
-            alert(
-                err.response.data?.mensaje ||
-                err.response.data
-            );
-        } else {
-            alert("No se pudo conectar con el servidor");
-        }
+    if (err.response) {
+      alert(
+        err.response.data?.mensaje ||
+        "Error al enviar factura"
+      );
+    } else {
+      alert("No se pudo conectar con el servidor");
     }
+  }
+};
+
+const generarYSubirPDF = async () => {
+  try {
+    console.log(`📄 GENERANDO PDF DE FACTURA ${factura.id}...`);
+
+    const elemento = document.querySelector(".factura-paper");
+
+    if (!elemento) {
+      throw new Error("No se encontró la factura");
+    }
+
+    const canvas = await html2canvas(elemento, {
+      scale: 2,
+      useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const ancho = 210;
+    const alto = (canvas.height * ancho) / canvas.width;
+
+    pdf.addImage(
+      imgData,
+      "PNG",
+      0,
+      0,
+      ancho,
+      alto
+    );
+
+    const pdfBlob = pdf.output("blob");
+
+    const formData = new FormData();
+
+    formData.append(
+      "pdf",
+      pdfBlob,
+      `Factura-${factura.id}.pdf`
+    );
+
+    const respuesta = await api.put(
+      `/SubirPDF/${factura.id}`,
+      formData
+    );
+
+    console.log("✅ PDF GUARDADO");
+    console.log("🔗 URL:", respuesta.data.pdf);
+
+    return respuesta.data.pdf;
+
+  } catch (error) {
+    console.error(
+      "❌ ERROR GENERANDO PDF:",
+      error.response?.data || error
+    );
+
+    throw error;
+  }
 };
 
   return (
